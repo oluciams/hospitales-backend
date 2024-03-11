@@ -28,7 +28,6 @@ const UsuarioSchema = Schema({
   },
 });
 
-//se hace para fines visuales, no afecta la base de datos
 UsuarioSchema.method("toJSON", function () {
   const { __v, _id, password, ...object } = this.toObject();
   object.uid = _id;
