@@ -14,17 +14,59 @@ const getUsuarios = async (req, res) => {
 
 const crearUsuario = async (req, res = response) => {
 
-  const { email, password, nombre } = req.body;
+  const { email, password } = req.body;
 
-  const usuario = new Usuario(req.body);
+    try {
 
-  await usuario.save();
+      const existeEmail = await Usuario.findOne({ email });
 
-    res.json({
-      ok: true,
-      usuario,
-  });
-};
+      if ( existeEmail ) {
+          return res.status(400).json({
+              ok: false,
+              msg: 'El correo ya está registrado'
+          });
+      }
+
+      const usuario = new Usuario( req.body );
+  /*
+      // Encriptar contraseña
+      const salt = bcrypt.genSaltSync();
+      usuario.password = bcrypt.hashSync( password, salt );
+  */
+
+      // Guardar usuario
+      await usuario.save();
+  /*
+      // Generar el TOKEN - JWT
+      const token = await generarJWT( usuario.id );
+
+  */
+      res.json({
+          ok: true,
+          usuario,
+          //token
+      });
+
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        ok: false,
+        msg: 'Error inesperado... revisar logs'
+      });
+  }
+
+}
+
+
+//   const usuario = new Usuario(req.body);
+
+//   await usuario.save();
+
+//     res.json({
+//       ok: true,
+//       usuario,
+//   });
+// };
 
 module.exports = {
   getUsuarios,
