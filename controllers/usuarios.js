@@ -14,11 +14,9 @@ const getUsuarios = async (req, res) => {
 };
 
 const crearUsuario = async (req, res = response) => {
-
   const { email, password } = req.body;
 
   try {
-
     const existeEmail = await Usuario.findOne({ email });
 
     if (existeEmail) {
@@ -55,23 +53,19 @@ const crearUsuario = async (req, res = response) => {
       msg: 'Error inesperado... revisar logs'
     });
   }
-
 };
 
 const actualizarUsuario = async (req, res = response) => {  
-
   const uid = req.params.id;
 
   try {
     const usuarioDB = await Usuario.findById(uid);
-
     if (!usuarioDB) {
       return res.status(404).json({
         ok: false,
         msg: "No existe un usuario por ese id",
       });
     }
-
     // Actualizaciones
     const { password, google, email, ...campos } = req.body;
 
@@ -84,7 +78,6 @@ const actualizarUsuario = async (req, res = response) => {
         });
       }
     }
-
     // if (!usuarioDB.google) {
     //   campos.email = email;
     // } else if (usuarioDB.email !== email) {
@@ -93,16 +86,14 @@ const actualizarUsuario = async (req, res = response) => {
     //     msg: "Usuario de google no pueden cambiar su correo",
     //   });
     // }
-
     const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, {
       new: true,
     });
-
     res.json({
       ok: true,
       usuario: usuarioActualizado,
     });
-
+    
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -112,10 +103,39 @@ const actualizarUsuario = async (req, res = response) => {
   }
 };
 
+const borrarUsuario = async (req, res = response) => {
+  const uid = req.params.id;
+
+  try {
+    const usuarioDB = await Usuario.findById(uid);
+
+    if (!usuarioDB) {
+      return res.status(404).json({
+        ok: false,
+        msg: "No existe un usuario por ese id",
+      });
+    }
+
+    await Usuario.findByIdAndDelete(uid);
+
+    res.json({
+      ok: true,
+      msg: "Usuario eliminado",
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Hable con el administrador",
+    });
+  }
+};
 
 
 module.exports = {
   getUsuarios,
   crearUsuario,
   actualizarUsuario,
+  borrarUsuario,
 };

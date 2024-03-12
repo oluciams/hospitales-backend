@@ -9,6 +9,7 @@ const {
   getUsuarios,
   crearUsuario,
   actualizarUsuario,
+  borrarUsuario,
 } = require("../controllers/usuarios");
 
 
@@ -40,6 +41,11 @@ router.put(
   ],
   actualizarUsuario
 );
+
+router.delete("/:id",
+  //  [validarJWT, varlidarADMIN_ROLE], 
+  borrarUsuario);
+
 
 
 
