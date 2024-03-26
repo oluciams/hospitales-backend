@@ -4,6 +4,7 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
 
 const {
   getUsuarios,
@@ -17,7 +18,7 @@ const {
 const router = Router();
 
 
-router.get("/", getUsuarios);
+router.get("/", validarJWT, getUsuarios);
 
 router.post("/",
   [
@@ -32,7 +33,7 @@ router.post("/",
 router.put(
   "/:id",
   [
-    //validarJWT,
+    validarJWT,
     //varlidarADMIN_ROLE_o_MismoUsuario,
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
     check("email", "El email es obligatorio").isEmail(),
@@ -43,7 +44,8 @@ router.put(
 );
 
 router.delete("/:id",
-  //  [validarJWT, varlidarADMIN_ROLE], 
+  [validarJWT],
+   // varlidarADMIN_ROLE], 
   borrarUsuario);
 
 
